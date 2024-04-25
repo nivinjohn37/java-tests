@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,5 +48,12 @@ class DemoUtilsTest {
         String academy = "Luv2Code Academy";
         assertTrue(academy.equals(demoUtils.getAcademy()));
         assertSame(academy, demoUtils.getAcademy());
+    }
+
+    @Test
+    @DisplayName("greater than or less than")
+    void testGreater() {
+        int number = 1;
+        assertFalse(demoUtils.isGreater(number, 2));
     }
 }
