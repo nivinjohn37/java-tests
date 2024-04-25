@@ -1,11 +1,17 @@
 package com.luv2code.junitdemo;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayNameGeneration(DisplayNameGenerator.Simple.class)
 class DemoUtilsTest {
     DemoUtils demoUtils;
 
@@ -22,6 +28,7 @@ class DemoUtilsTest {
     }
 
     @Test
+        //@DisplayName("Test Add")
     void testAdd() {
         System.out.println("Test Add");
         assertEquals(4, demoUtils.add(1, 3), "1+3 = 4");
@@ -32,5 +39,13 @@ class DemoUtilsTest {
         System.out.println("Test Null");
         String test = null;
         assertNull(demoUtils.checkNull(null));
+    }
+
+    @Test
+    @DisplayName("same and true")
+    void testObjectSame() {
+        String academy = "Luv2Code Academy";
+        assertTrue(academy.equals(demoUtils.getAcademy()));
+        assertSame(academy, demoUtils.getAcademy());
     }
 }
