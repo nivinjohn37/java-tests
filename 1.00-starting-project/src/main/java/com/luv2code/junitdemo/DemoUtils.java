@@ -9,7 +9,6 @@ public class DemoUtils {
     private String[] firstThreeLettersOfAlphabet = {"A", "B", "C"};
     private List<String> academyInList = List.of("luv", "2", "code");
 
-    private List<String> academyInList1 = List.of("luv", "2", "code");
     public List<String> getAcademyInList() {
         return academyInList;
     }
