@@ -32,7 +32,7 @@
                 <version>3.0.0-M5</version>
 
                 <configuration>
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <testFailureIgnore>true</testFailureIgnore><!--by default maven surefire will not generate surefire-report.html if this is not configured to true-->
 
                     <statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
                         <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>

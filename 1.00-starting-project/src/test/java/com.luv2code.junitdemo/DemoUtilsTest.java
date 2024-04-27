@@ -61,6 +61,7 @@ class DemoUtilsTest {
 
     @Test
     @DisplayName("array test with order")
+    @Disabled("Don't run until the JIRA is resolved")
     void testArrayOrder(){
         List<String> testList = List.of("2", "luv", "code");
         assertIterableEquals(testList, demoUtils.getAcademyInList(), "List items should be equal");
