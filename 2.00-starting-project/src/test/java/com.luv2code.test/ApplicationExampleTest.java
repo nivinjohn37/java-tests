@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 @SpringBootTest(classes = MvcTestingExampleApplication.class)
@@ -35,10 +38,10 @@ public class ApplicationExampleTest {
     CollegeStudent student;
 
     @Autowired
-    StudentGrades  studentGrades;
+    StudentGrades studentGrades;
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         count = count + 1;
         String out1 = String.format("Testing: %s which is %s Version: %s .Execution of test method %d",
                 appInfo, appDesc, appVersion, count);
@@ -56,9 +59,18 @@ public class ApplicationExampleTest {
 
     @DisplayName("Add grade results for student grades")
     @Test
-    public void addGradeResultsForStudentGrades(){
-        assertEquals(363.5,
-                studentGrades.addGradeResultsForSingleClass
-                        (student.getStudentGrades().getMathGradeResults()));
+    public void addGradeResultsForStudentGrades() {
+        assertEquals(BigDecimal.valueOf(353.7).setScale(2, RoundingMode.HALF_EVEN), BigDecimal.valueOf(studentGrades.addGradeResultsForSingleClass
+                (student.getStudentGrades().getMathGradeResults())).setScale(2, RoundingMode.HALF_EVEN)
+        );
     }
+
+    @DisplayName("Add grade results for student grades not equal")
+    @Test
+    public void addGradeResultsForStudentGradesNotEqual() {
+        assertNotEquals(BigDecimal.valueOf(353).setScale(2, RoundingMode.HALF_EVEN), BigDecimal.valueOf(studentGrades.addGradeResultsForSingleClass
+                (student.getStudentGrades().getMathGradeResults())).setScale(2, RoundingMode.HALF_EVEN)
+        );
+    }
+
 }
