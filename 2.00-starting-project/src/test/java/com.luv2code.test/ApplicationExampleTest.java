@@ -4,14 +4,16 @@ import com.luv2code.component.MvcTestingExampleApplication;
 import com.luv2code.component.models.CollegeStudent;
 import com.luv2code.component.models.StudentGrades;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.SQLOutput;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @SpringBootTest(classes = MvcTestingExampleApplication.class)
 public class ApplicationExampleTest {
@@ -51,9 +53,12 @@ public class ApplicationExampleTest {
 
     }
 
-    @Test
-    @RepeatedTest(value = 2)
-    void basicTest(){
 
+    @DisplayName("Add grade results for student grades")
+    @Test
+    public void addGradeResultsForStudentGrades(){
+        assertEquals(363.5,
+                studentGrades.addGradeResultsForSingleClass
+                        (student.getStudentGrades().getMathGradeResults()));
     }
 }
