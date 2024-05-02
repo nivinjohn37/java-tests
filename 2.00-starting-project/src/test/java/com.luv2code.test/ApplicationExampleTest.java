@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,6 +17,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 @SpringBootTest(classes = MvcTestingExampleApplication.class)
@@ -33,6 +37,9 @@ public class ApplicationExampleTest {
 
     @Value("${info.app.name}")
     private String schoolName;
+
+    @Autowired
+    ApplicationContext context;
 
     @Autowired
     CollegeStudent student;
@@ -71,6 +78,26 @@ public class ApplicationExampleTest {
         assertNotEquals(BigDecimal.valueOf(353).setScale(2, RoundingMode.HALF_EVEN), BigDecimal.valueOf(studentGrades.addGradeResultsForSingleClass
                 (student.getStudentGrades().getMathGradeResults())).setScale(2, RoundingMode.HALF_EVEN)
         );
+    }
+
+    @DisplayName("Create student without grade init")
+    @Test
+    public void createStudentWithoutGradesInit(){
+        CollegeStudent studentTwo = context.getBean("collegeStudent", CollegeStudent.class);
+        studentTwo.setFirstname("Test");
+        studentTwo.setLastname("Two");
+        studentTwo.setEmailAddress("test.two@email.com");
+        assertNotNull(studentTwo.getFirstname());
+        assertNotNull(studentTwo.getLastname());
+        assertNotNull(studentTwo.getEmailAddress());
+        assertNull(studentGrades.checkNull(studentTwo.getStudentGrades()));
+    }
+
+    @DisplayName("Verify students are prototypes")
+    @Test
+    public void verifyStudentsArePrototypes(){
+        CollegeStudent studentTwo = context.getBean("collegeStudent", CollegeStudent.class);
+        assertNotSame(student, studentTwo);
     }
 
 }
