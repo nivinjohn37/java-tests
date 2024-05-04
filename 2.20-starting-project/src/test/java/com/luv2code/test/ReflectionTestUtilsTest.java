@@ -29,9 +29,9 @@ public class ReflectionTestUtilsTest {
 
     @BeforeEach
     public void studentBeforeEach() {
-        studentOne.setFirstname("Eric");
-        studentOne.setLastname("Roby");
-        studentOne.setEmailAddress("eric.roby@luv2code_school.com");
+        studentOne.setFirstname("One");
+        studentOne.setLastname("Test");
+        studentOne.setEmailAddress("one.test@email.com");
         studentOne.setStudentGrades(studentGrades);
 
         ReflectionTestUtils.setField(studentOne, "id", 1);
@@ -47,7 +47,7 @@ public class ReflectionTestUtilsTest {
 
     @Test
     public void invokePrivateMethod() {
-        assertEquals("Eric 1",
+        assertEquals("One 1",
                 ReflectionTestUtils.invokeMethod(studentOne, "getFirstNameAndId"),
                 "Fail private method not call");
     }

@@ -63,6 +63,5 @@ public class FizzBuzzTest {
                 FizzBuzz.compute(i);
             }
         });
-
     }
 }
