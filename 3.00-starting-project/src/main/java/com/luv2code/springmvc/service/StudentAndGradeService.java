@@ -16,7 +16,8 @@ public class StudentAndGradeService {
     StudentDao studentDao;
 
     public void createStudent(String firstName, String lastName, String email) {
-
+        CollegeStudent student = new CollegeStudent(firstName, lastName, email);
+        studentDao.save(student);
     }
 
     public boolean isStudentNotNull(int id) {
