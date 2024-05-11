@@ -73,9 +73,25 @@ public class StudentAndGradeServiceTest {
     @Test
     public void deleteStudentTest() {
         Optional<CollegeStudent> deletedStudent = studentDao.findById(2);
+        Optional<MathGrade> deletedMathGrade = mathGradeDao.findById(1);
+        Optional<HistoryGrade> deletedHistoryGrade = historyGradeDao.findById(1);
+        Optional<ScienceGrade> deletedScienceGrade = scienceGradeDao.findById(1);
+
         assertTrue(deletedStudent.isPresent());
+
+        assertTrue(deletedMathGrade.isPresent());
+        assertTrue(deletedHistoryGrade.isPresent());
+        assertTrue(deletedScienceGrade.isPresent());
+
         studentService.deleteStudent(2);
         deletedStudent = studentDao.findById(2);
+        deletedMathGrade = mathGradeDao.findById(1);
+        deletedHistoryGrade = historyGradeDao.findById(1);
+        deletedScienceGrade = scienceGradeDao.findById(1);
+
+        assertFalse(deletedMathGrade.isPresent());
+        assertFalse(deletedHistoryGrade.isPresent());
+        assertFalse(deletedScienceGrade.isPresent());
         assertFalse(deletedStudent.isPresent(), "return false");
     }
 
@@ -128,7 +144,7 @@ public class StudentAndGradeServiceTest {
     public void createGradeServiceReturnFalse(){
         assertFalse(studentService.createGrade(104.2, 2, "math"));
         assertFalse(studentService.createGrade(-2.1, 2, "math"));
-        assertFalse(studentService.createGrade(24.2, 2, "math"), "valid student found");
+        assertFalse(studentService.createGrade(24.2, 12, "math"), "valid student found");
         assertFalse(studentService.createGrade(24.2, 2, "english"));
     }
 
