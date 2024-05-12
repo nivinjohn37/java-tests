@@ -1,9 +1,12 @@
 package com.luv2code.springmvc.service;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.Grade;
+import com.luv2code.springmvc.models.GradebookCollegeStudent;
 import com.luv2code.springmvc.models.HistoryGrade;
 import com.luv2code.springmvc.models.MathGrade;
 import com.luv2code.springmvc.models.ScienceGrade;
+import com.luv2code.springmvc.models.StudentGrades;
 import com.luv2code.springmvc.repository.HistoryGradeDao;
 import com.luv2code.springmvc.repository.MathGradeDao;
 import com.luv2code.springmvc.repository.ScienceGradeDao;
@@ -13,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +46,9 @@ public class StudentAndGradeService {
 
     @Autowired
     HistoryGradeDao historyGradeDao;
+
+    @Autowired
+    StudentGrades studentGrades;
 
     public void createStudent(String firstName, String lastName, String email) {
         CollegeStudent student = new CollegeStudent(firstName, lastName, email);
@@ -121,5 +129,27 @@ public class StudentAndGradeService {
             historyGradeDao.deleteById(id);
         }
         return studentId;
+    }
+
+    public GradebookCollegeStudent getStudentInformation(int id) {
+        Optional<CollegeStudent> student = studentDao.findById(id);
+        Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(id);
+        Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(id);
+        Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(id);
+
+        List<Grade> mathGradesList = new ArrayList<>();
+        mathGrades.forEach(mathGradesList :: add);
+        List<Grade> scienceGradesList = new ArrayList<>();
+        scienceGrades.forEach(scienceGradesList :: add);
+        List<Grade> historyGradesList = new ArrayList<>();
+        historyGrades.forEach(historyGradesList :: add);
+
+        studentGrades.setHistoryGradeResults(historyGradesList);
+        studentGrades.setMathGradeResults(mathGradesList);
+        studentGrades.setScienceGradeResults(scienceGradesList);
+
+        return new GradebookCollegeStudent(student.get().getId(),
+            student.get().getFirstname(), student.get().getLastname(),
+            student.get().getEmailAddress(), studentGrades);
     }
 }

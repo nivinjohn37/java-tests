@@ -1,6 +1,7 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.GradebookCollegeStudent;
 import com.luv2code.springmvc.models.HistoryGrade;
 import com.luv2code.springmvc.models.MathGrade;
 import com.luv2code.springmvc.models.ScienceGrade;
@@ -153,6 +154,21 @@ public class StudentAndGradeServiceTest {
         assertEquals(2, studentService.deleteGrade(1, "math"), "Returns student id after delete");
         assertEquals(2, studentService.deleteGrade(1, "science"), "Returns student id after delete");
         assertEquals(2, studentService.deleteGrade(1, "history"), "Returns student id after delete");
+    }
+
+    @Test
+    public void studentInformation(){
+        GradebookCollegeStudent gradebookCollegeStudent
+                = studentService.getStudentInformation(2);
+        assertNotNull(gradebookCollegeStudent);
+        assertEquals(2, gradebookCollegeStudent.getId());
+        assertEquals("Two", gradebookCollegeStudent.getFirstname());
+        assertEquals(1, gradebookCollegeStudent
+                .getStudentGrades().getHistoryGradeResults().size());
+        assertEquals(1, gradebookCollegeStudent
+                .getStudentGrades().getScienceGradeResults().size());
+        assertEquals(1, gradebookCollegeStudent
+                .getStudentGrades().getMathGradeResults().size());
     }
 
 
