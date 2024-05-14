@@ -113,14 +113,14 @@ public class StudentAndGradeService {
             }
             studentId = grade.get().getStudentId();
             mathGradeDao.deleteById(id);
-        }else if (gradeType.equals("science")) {
+        } else if (gradeType.equals("science")) {
             Optional<ScienceGrade> grade = scienceGradeDao.findById(id);
             if (grade.isEmpty()) {
                 return studentId;
             }
             studentId = grade.get().getStudentId();
             scienceGradeDao.deleteById(id);
-        }else if (gradeType.equals("history")) {
+        } else if (gradeType.equals("history")) {
             Optional<HistoryGrade> grade = historyGradeDao.findById(id);
             if (grade.isEmpty()) {
                 return studentId;
@@ -132,24 +132,29 @@ public class StudentAndGradeService {
     }
 
     public GradebookCollegeStudent getStudentInformation(int id) {
-        Optional<CollegeStudent> student = studentDao.findById(id);
-        Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(id);
-        Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(id);
-        Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(id);
+        if (isStudentNotNull(id)) {
+            Optional<CollegeStudent> student = studentDao.findById(id);
+            Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(id);
+            Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(id);
+            Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(id);
 
-        List<Grade> mathGradesList = new ArrayList<>();
-        mathGrades.forEach(mathGradesList :: add);
-        List<Grade> scienceGradesList = new ArrayList<>();
-        scienceGrades.forEach(scienceGradesList :: add);
-        List<Grade> historyGradesList = new ArrayList<>();
-        historyGrades.forEach(historyGradesList :: add);
+            List<Grade> mathGradesList = new ArrayList<>();
+            mathGrades.forEach(mathGradesList::add);
+            List<Grade> scienceGradesList = new ArrayList<>();
+            scienceGrades.forEach(scienceGradesList::add);
+            List<Grade> historyGradesList = new ArrayList<>();
+            historyGrades.forEach(historyGradesList::add);
 
-        studentGrades.setHistoryGradeResults(historyGradesList);
-        studentGrades.setMathGradeResults(mathGradesList);
-        studentGrades.setScienceGradeResults(scienceGradesList);
+            studentGrades.setHistoryGradeResults(historyGradesList);
+            studentGrades.setMathGradeResults(mathGradesList);
+            studentGrades.setScienceGradeResults(scienceGradesList);
 
-        return new GradebookCollegeStudent(student.get().getId(),
-            student.get().getFirstname(), student.get().getLastname(),
-            student.get().getEmailAddress(), studentGrades);
+            return new GradebookCollegeStudent(student.get().getId(),
+                    student.get().getFirstname(), student.get().getLastname(),
+                    student.get().getEmailAddress(), studentGrades);
+        }
+
+        return null;
+
     }
 }
