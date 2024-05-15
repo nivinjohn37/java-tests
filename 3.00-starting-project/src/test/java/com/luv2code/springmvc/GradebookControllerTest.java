@@ -123,6 +123,24 @@ public class GradebookControllerTest {
         ModelAndViewAssert.assertViewName(mav, "error");
     }
 
+    @Test
+    public void studentInformationHttpRequest() throws Exception{
+        assertTrue(studentDao.findById(2).isPresent());
+        MvcResult mvcResult = mockMvc.perform(get("/studentInformation/{id}", 2))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav, "studentInformation");
+    }
+
+    @Test
+    public void studentInformationHttpStudentDoesNotExistRequest() throws Exception{
+        assertFalse(studentDao.findById(1).isPresent());
+        MvcResult mvcResult = mockMvc.perform(get("/studentInformation/{id}", 1))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView mav = mvcResult.getModelAndView();
+        ModelAndViewAssert.assertViewName(mav, "error");
+    }
+
     @AfterEach
     public void setAfterTransaction() {
         jdbcTemplate.execute("delete from student");

@@ -75,6 +75,7 @@ public class StudentAndGradeServiceTest {
 
     @Value("${sql.scripts.delete.history.grade}")
     private String sqlDeleteHistoryGrade;
+
     @BeforeEach
     public void setUpDatabase() {
         jdbcTemplate.execute(sqlAddStudent);
