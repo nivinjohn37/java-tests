@@ -1,6 +1,7 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.Gradebook;
 import com.luv2code.springmvc.models.GradebookCollegeStudent;
 import com.luv2code.springmvc.repository.StudentDao;
 import com.luv2code.springmvc.service.StudentAndGradeService;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -29,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -50,8 +53,35 @@ public class GradebookControllerTest {
     @Autowired
     private StudentDao studentDao;
 
+    @Autowired
+    private StudentAndGradeService studentService;
+
     @Mock
     private StudentAndGradeService studentCreateServiceMock;
+
+    @Value("${sql.scripts.create.student}")
+    private String sqlAddStudent;
+
+    @Value("${sql.scripts.create.math.grade}")
+    private String sqlAddMathStudent;
+
+    @Value("${sql.scripts.create.science.grade}")
+    private String sqlAddScienceGrade;
+
+    @Value("${sql.scripts.create.history.grade}")
+    private String sqlAddHistoryGrade;
+
+    @Value("${sql.scripts.delete.student}")
+    private String sqlDeleteStudent;
+
+    @Value("${sql.scripts.delete.math.grade}")
+    private String sqlDeleteMathGrade;
+
+    @Value("${sql.scripts.delete.science.grade}")
+    private String sqlDeleteScienceGrade;
+
+    @Value("${sql.scripts.delete.history.grade}")
+    private String sqlDeleteHistoryGrade;
 
     @BeforeAll // all methods must be declared static - all must be public and return void
     private static void setup(){
@@ -60,10 +90,13 @@ public class GradebookControllerTest {
         request.setParameter("lastname", "test");
         request.setParameter("emailAddress", "three.test@email.com");
     }
+
     @BeforeEach
     public void setUpDatabase() {
-        jdbcTemplate.execute("insert into student(id, firstname, lastname, email_address)" +
-                " values (2, 'Two', 'Test', 'two.test@email.com') ");
+        jdbcTemplate.execute(sqlAddStudent);
+        jdbcTemplate.execute(sqlAddMathStudent);
+        jdbcTemplate.execute(sqlAddHistoryGrade);
+        jdbcTemplate.execute(sqlAddScienceGrade);
     }
 
     @Test
@@ -141,8 +174,32 @@ public class GradebookControllerTest {
         ModelAndViewAssert.assertViewName(mav, "error");
     }
 
+    @Test
+    public void createValidGradeHttpRequest() throws Exception {
+        assertTrue(studentDao.findById(2).isPresent());
+        GradebookCollegeStudent gradebookCollegeStudent = studentService.getStudentInformation(2);
+        assertEquals(1, gradebookCollegeStudent.getStudentGrades().getMathGradeResults().size());
+
+        MvcResult mvcResult = mockMvc.perform(post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("grade", "85.00")
+                .param("gradeType", "math")
+                .param("studentId", "2"))
+                .andExpect(status().isOk()).andReturn();
+        ModelAndView modelAndView = mvcResult.getModelAndView();
+        assert modelAndView != null;
+        ModelAndViewAssert.assertViewName(modelAndView, "studentInformation");
+        assertEquals(2, gradebookCollegeStudent.getStudentGrades().getMathGradeResults().size());
+
+    }
+
+
     @AfterEach
     public void setAfterTransaction() {
-        jdbcTemplate.execute("delete from student");
+        jdbcTemplate.execute(sqlDeleteStudent);
+        jdbcTemplate.execute(sqlDeleteMathGrade);
+        jdbcTemplate.execute(sqlDeleteHistoryGrade);
+        jdbcTemplate.execute(sqlDeleteScienceGrade);
     }
+
 }

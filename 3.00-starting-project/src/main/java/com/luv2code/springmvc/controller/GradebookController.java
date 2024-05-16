@@ -10,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class GradebookController {
@@ -86,4 +88,42 @@ public class GradebookController {
         return "studentInformation";
     }
 
+    @PostMapping(value ="/grades")
+    public String createGrade(@RequestParam("grade") double grade,
+                              @RequestParam("gradeType") String gradeType,
+                              @RequestParam("studentId") int studentId,
+                              Model m){
+        boolean isGradeCreated = studentAndGradeService.createGrade(grade, studentId, gradeType);
+        if(isGradeCreated){
+            GradebookCollegeStudent studentEntity = studentAndGradeService.getStudentInformation(studentId);
+            m.addAttribute("student", studentEntity);
+            if(studentEntity.getStudentGrades().getMathGradeResults().size() > 0){
+                m.addAttribute("mathAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                        studentEntity.getStudentGrades().getMathGradeResults()
+                ));
+            }else{
+                m.addAttribute("mathAverage", "N/A");
+            }
+
+            if(studentEntity.getStudentGrades().getScienceGradeResults().size() > 0){
+                m.addAttribute("scienceAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                        studentEntity.getStudentGrades().getScienceGradeResults()
+                ));
+            }else{
+                m.addAttribute("scienceAverage", "N/A");
+            }
+
+
+            if(studentEntity.getStudentGrades().getHistoryGradeResults().size() > 0){
+                m.addAttribute("historyAverage", studentEntity.getStudentGrades().findGradePointAverage(
+                        studentEntity.getStudentGrades().getHistoryGradeResults()
+                ));
+            }else{
+                m.addAttribute("historyAverage", "N/A");
+            }
+            return "studentInformation";
+        }else{
+            return "error";
+        }
+    }
 }
