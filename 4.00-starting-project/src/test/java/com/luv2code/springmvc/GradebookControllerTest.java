@@ -38,6 +38,8 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.hamcrest.Matchers.is;
+
 @TestPropertySource("/application-test.properties")
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -169,6 +171,18 @@ public class GradebookControllerTest {
         //assertNull(verifyStudent, "Student found");
     }
 
+    @Test
+    public void deleteStudentHttpRequestErrorPage() throws Exception{
+        assertFalse(studentDao.findById(0).isPresent());
+
+        mockMvc.perform(delete("/student/{id}", 0))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.message", is("Student or Grade was not found")));
+
+
+
+    }
 
     @AfterEach
     public void setAfterTransaction() {
